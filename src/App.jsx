@@ -1,10 +1,31 @@
 import React, { useEffect, useState } from 'react';
 
 const App = () => {
-  const SQUARES = Array.from({ length: 6 }, () => ({ letters: ['', '', '', '', '',] }));
+  const [squares, setSquares] = useState(Array.from({ length: 6 }, () => ({ letters: ['', '', '', '', '',] })));
 
   useEffect(() => {
-    console.log(SQUARES);
+    console.log(squares);
+
+    const handleKeyPress = (e) => {
+      // Enter a letter on square
+       setSquares((prevSquares) => {
+        const newSquares = [...prevSquares];
+        const firstSquare = { ...newSquares[0] };
+        const letters = [...firstSquare.letters];
+
+        const emptyIndex = letters.findIndex((l) => l === '');
+        if (emptyIndex !== -1) {
+          letters[emptyIndex] = e.key;
+          console.log('@letter', letters[emptyIndex])
+          firstSquare.letters = letters;
+          newSquares[0] = firstSquare;
+        }
+
+        return newSquares;
+      });
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
   }, []);
 
   return (
@@ -19,7 +40,7 @@ const App = () => {
           gap: '2px',
         }}
       >
-        {SQUARES.map((line, i) =>
+        {squares.map((line, i) =>
           line.letters.map((letter, j) => (
             <div
               key={`${i}-${j}`}
@@ -32,7 +53,7 @@ const App = () => {
                 border: '2px solid black',
               }}
             >
-              <span>{i}-{j}</span>
+              <span>{letter}</span>
             </div>
           ))
         )}
