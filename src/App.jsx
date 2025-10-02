@@ -1,31 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 const App = () => {
   const [squares, setSquares] = useState(Array.from({ length: 6 }, () => ({ letters: ['', '', '', '', '',] })));
+  const wordRef = useRef(0);
+  const testWord = 'house';
 
   useEffect(() => {
-    console.log(squares);
+    console.log('@changed letters', squares);
+  }, [squares]);
+  
+  useEffect(() => {
+    function insertLetter(e) {
 
-    const handleKeyPress = (e) => {
+      if (e.key === 'Enter') {
+        setSquares((prevSquares) => {
+          const currentWord = prevSquares[wordRef.current];
+          if(wordRef.current >= 6 ) return; 
+          if (currentWord.letters.includes('')) return prevSquares;
+    
+          wordRef.current++;
+          console.log("@word ref", wordRef.current);
+          return prevSquares;
+        });
+        return;
+      }
+
+      if(wordRef.current >= 6 ) return;
+
       // Enter a letter on square
        setSquares((prevSquares) => {
         const newSquares = [...prevSquares];
-        const firstSquare = { ...newSquares[0] };
-        const letters = [...firstSquare.letters];
+        // pick word by wordRef
+        const word = { ...newSquares[wordRef.current]};
+        console.log('@word', word)
+        // spread all letters of word
+        const letters = [...word.letters];
 
+        // find first empty letter 
         const emptyIndex = letters.findIndex((l) => l === '');
         if (emptyIndex !== -1) {
+          //set pressed key as letter
           letters[emptyIndex] = e.key;
-          console.log('@letter', letters[emptyIndex])
-          firstSquare.letters = letters;
-          newSquares[0] = firstSquare;
+          word.letters = letters;
+          newSquares[wordRef.current] = word;
         }
 
         return newSquares;
       });
+
     };
 
-    window.addEventListener('keydown', handleKeyPress);
+    window.addEventListener('keydown', insertLetter);
   }, []);
 
   return (
@@ -53,7 +78,7 @@ const App = () => {
                 border: '2px solid black',
               }}
             >
-              <span>{letter}</span>
+              <span style={{ color: testWord.includes(letter) ? 'green' : '' }}>{letter}</span>
             </div>
           ))
         )}
