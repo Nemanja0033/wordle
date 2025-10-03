@@ -38,33 +38,33 @@ const App = () => {
       // Apply entered word logic
       if (e.key === 'Enter') {
         // Limt word tries.
-        if(wordRef.current >= 6 ) return;
+        if (wordRef.current >= 6) return;
 
         setSquares((prevSquares) => {
           const currentWord = prevSquares[wordRef.current];
 
           // Ensure that whole word if filled with chars before apply
-          if (currentWord.letters.includes('')){
-            toast('Enter full word!')
-            return prevSquares;
+          if (currentWord.letters.includes('')) {
+            toast('Enter full word!');
+            return [...prevSquares];
           }
-          
+
           // Check if entred word is not valid
-          if(!allWordsRef.current.includes(currentWord.letters.join(''))){
+          if (!allWordsRef.current.includes(currentWord.letters.join(''))) {
             toast('Invalid word!');
-            return prevSquares;
+            return [...prevSquares];
           }
 
           // If user guess the word
-          if(currentWord.letters.join('') === rightWordRef.current){
-            toast('You guessed the word!')
-            return prevSquares
+          if (currentWord.letters.join('') === rightWordRef.current) {
+            toast('You guessed the word!');
+            return [...prevSquares];
           }
 
           // If everything is okay, then move to next try 
           wordRef.current++;
           console.log("@word ref", wordRef.current);
-          return prevSquares;
+          return [...prevSquares]; 
         });
         return;
       }
