@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { API_URL, RANDOM_INDEX } from './utils.js'
+import { API_URL, RANDOM_INDEX } from './utils/utils.js'
+import { ALLOWED_KEYS } from './utils/constants.js';
+import { toast, ToastContainer } from 'react-toastify';
 
 const App = () => {
   const [squares, setSquares] = useState(Array.from({ length: 6 }, () => ({ letters: ['', '', '', '', '',] })));
@@ -26,6 +28,11 @@ const App = () => {
   
   useEffect(() => {
     function gameLogic(e) {
+      if(!ALLOWED_KEYS.includes(e.key)){
+        console.log('Invlaid key');
+        return
+      }
+
       // Apply entered word
       if (e.key === 'Enter') {
         // Limt word tries.
@@ -35,11 +42,14 @@ const App = () => {
           const currentWord = prevSquares[wordRef.current];
 
           // Ensure that whole word if filled with chars before apply
-          if (currentWord.letters.includes('')) return prevSquares;
+          if (currentWord.letters.includes('')){
+            toast('Enter full word!')
+            return prevSquares;
+          }
           
           // Check if entred word is not valid
           if(!allWordsRef.current.includes(currentWord.letters.join(''))){
-            console.log('@invalid wors');
+            toast('Invalid word!');
             return prevSquares;
           } 
 
@@ -91,6 +101,7 @@ const App = () => {
 
   return (
     <main style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <ToastContainer autoClose={2000} draggable={true} theme='dark' />
       <div
         style={{
           width: '300px',
