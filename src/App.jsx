@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { API_URL, RANDOM_INDEX } from './utils/utils.js'
+import { API_URL, RANDOM_INDEX, getColor } from './utils/utils.js'
 import { ALLOWED_KEYS } from './utils/constants.js';
 import { toast, ToastContainer } from 'react-toastify';
 
@@ -8,7 +8,7 @@ const App = () => {
   const wordRef = useRef(0);
   const allWordsRef = useRef(null);
   const rightWordRef = useRef(null);
-  const testWord = 'house';
+  const testWord = 'house'
 
   useEffect(() => {
     const fetchWords =  async () => {
@@ -17,6 +17,7 @@ const App = () => {
         const data = await res.json();
         allWordsRef.current = data.words;
         rightWordRef.current = allWordsRef.current[RANDOM_INDEX]
+        console.log('current word', rightWordRef.current, '@test word', testWord)
       }
       catch(err){
         console.error('Error while fetching words', err);
@@ -28,12 +29,13 @@ const App = () => {
   
   useEffect(() => {
     function gameLogic(e) {
-      if(!ALLOWED_KEYS.includes(e.key)){
+      // Validate pressed key
+      if(!ALLOWED_KEYS.includes(e.key) ){
         console.log('Invlaid key');
-        return
+        return;
       }
 
-      // Apply entered word
+      // Apply entered word logic
       if (e.key === 'Enter') {
         // Limt word tries.
         if(wordRef.current >= 6 ) return;
@@ -51,7 +53,13 @@ const App = () => {
           if(!allWordsRef.current.includes(currentWord.letters.join(''))){
             toast('Invalid word!');
             return prevSquares;
-          } 
+          }
+
+          // If user guess the word
+          if(currentWord.letters.join('') === rightWordRef.current){
+            toast('You guessed the word!')
+            return prevSquares
+          }
 
           // If everything is okay, then move to next try 
           wordRef.current++;
@@ -61,43 +69,66 @@ const App = () => {
         return;
       }
 
+      // Delete one letter logic
+      if (e.key === 'Backspace') {
+        setSquares((prevSquares) => {
+          const newSquares = [...prevSquares];
+          const word = { ...newSquares[wordRef.current] };
+          const letters = [...word.letters];
+      
+          let lastFilledIndex = -1;
+          for (let i = letters.length - 1; i >= 0; i--) {
+            if (letters[i] !== '') {
+              lastFilledIndex = i;
+              break;
+            }
+          }
+      
+          if (lastFilledIndex !== -1) {
+            letters[lastFilledIndex] = '';
+            word.letters = letters;
+            newSquares[wordRef.current] = word;
+          }
+      
+          return newSquares;
+        });
+      }
+
+      // Dont allow user to try more than is allowed
       if(wordRef.current >= 6 ) return;
 
-      // Enter a letter on square
-       setSquares((prevSquares) => {
-        const newSquares = [...prevSquares];
-        // pick word by wordRef
-        const word = { ...newSquares[wordRef.current]};
-        console.log('@word', word)
-        // spread all letters of word
-        const letters = [...word.letters];
-
-        // find first empty letter 
-        const emptyIndex = letters.findIndex((l) => l === '');
-        if (emptyIndex !== -1) {
-          //set pressed key as letter
-          letters[emptyIndex] = e.key;
-          word.letters = letters;
-          newSquares[wordRef.current] = word;
-        }
-
-        return newSquares;
-      });
-
+      // Enter a letter on square logic
+      if(ALLOWED_KEYS.includes(e.key)){
+        setSquares((prevSquares) => {
+          const newSquares = [...prevSquares];
+          // pick word by wordRef
+          const word = { ...newSquares[wordRef.current]};
+          console.log('@word', word)
+          // spread all letters of word
+          const letters = [...word.letters];
+  
+          // find first empty letter 
+          const emptyIndex = letters.findIndex((l) => l === '');
+          if (emptyIndex !== -1) {
+  
+            // if use enter a special char just retun current state
+            if(e.key === 'Enter' || e.key === 'Backspace'){
+              return newSquares;
+            }
+  
+            //set pressed key as letter
+            letters[emptyIndex] = e.key;
+            word.letters = letters;
+            newSquares[wordRef.current] = word;
+          }
+  
+          return newSquares;
+        });
+      }
     };
 
     window.addEventListener('keydown', gameLogic);
   }, []);
-
-  const getColor = (letter, index) => {
-    if (testWord.includes(letter)) {
-      if (testWord.indexOf(letter) === index) {
-        return 'green'; 
-      }
-      return 'orange'; 
-    }
-    return ''; 
-  };
 
   return (
     <main style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -125,7 +156,14 @@ const App = () => {
                 border: '2px solid black',
               }}
             >
-              <span style={{ color: getColor(letter, j), fontSize: '20px'}}>{letter}</span>
+                <span
+                  style={{
+                    color: i < wordRef.current ? getColor(letter, j, rightWordRef?.current) : '',
+                    fontSize: '20px',
+                  }}
+                >
+                  {letter}
+                </span>
             </div>
           ))
         )}
