@@ -53,6 +53,17 @@ const App = () => {
     window.addEventListener('keydown', insertLetter);
   }, []);
 
+  const getColor = (letter, index) => {
+    if (testWord.includes(letter)) {
+      if (testWord.indexOf(letter) === index) {
+        return 'green'; 
+      }
+      return 'orange'; 
+    }
+    return ''; 
+  };
+  
+
   return (
     <main style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div
@@ -78,7 +89,7 @@ const App = () => {
                 border: '2px solid black',
               }}
             >
-              <span style={{ color: testWord.includes(letter) ? 'green' : '' }}>{letter}</span>
+              <span style={{ color: getColor(letter, j)}}>{letter}</span>
             </div>
           ))
         )}
