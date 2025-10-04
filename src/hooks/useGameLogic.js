@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { ALLOWED_KEYS } from "../utils/constants";
+import { ALLOWED_KEYS, SOUNDS } from "../utils/constants";
 import { toast } from "react-toastify";
 
 export function useGameLogic(allWordsRef, rightWordRef){
@@ -24,24 +24,28 @@ export function useGameLogic(allWordsRef, rightWordRef){
 
             // Ensure that whole word if filled with chars before apply
             if (currentWord.letters.includes('')) {
+                SOUNDS.invalid_word.play();
                 toast('Enter full word!');
-                return [...prevSquares];
+                return prevSquares;
             }
 
             // Check if entred word is not valid
             if (!allWordsRef.current.includes(currentWord.letters.join(''))) {
                 toast('Invalid word!');
+                SOUNDS.invalid_word.play();
                 return [...prevSquares];
             }
 
             // If user guess the word
             if (currentWord.letters.join('') === rightWordRef.current) {
                 toast('You guessed the word!');
+                SOUNDS.win.play();
                 wordRef.current++;
                 return [...prevSquares];
             }
 
             // If everything is okay, then move to next try 
+            SOUNDS.partial.play();
             wordRef.current++;
             console.log("@word ref", wordRef.current);
             return [...prevSquares]; 

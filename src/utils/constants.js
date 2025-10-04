@@ -5,4 +5,10 @@ export const ALLOWED_KEYS = [
     'v', 'w', 'x', 'y', 'z', 'Enter', 'Backspace'
 ];
 
+export const SOUNDS = {
+    correct: new Audio('/right_letter_right_pos.wav'),
+    partial: new Audio('/right_letter_wrong_pos.wav'),
+    win: new Audio('guessed_word.wav'),
+    invalid_word: new Audio('invalid_word.wav')
+}
   
