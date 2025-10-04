@@ -12,7 +12,6 @@ export function useGetWords(){
             const data = await res.json();
             allWordsRef.current = data.words;
             rightWordRef.current = allWordsRef.current[RANDOM_INDEX]
-            console.log('current word', rightWordRef.current)
           }
           catch(err){
             console.error('Error while fetching words', err);
