@@ -8,7 +8,7 @@ const GameBoard = () => {
   const { wordRef, squares } = useGameLogic(allWordsRef, rightWordRef);
   
   return (
-    <main style={{ backgroundColor:'#1a1a1d', width: '100%', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <main style={{ backgroundColor:'#1a1a1d', width: '100%', height: '89.6vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div
         style={{
           width: 'auto',
