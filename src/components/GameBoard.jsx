@@ -1,7 +1,7 @@
 import React from 'react'
 import { useGetWords } from '../hooks/useGetWords.js'
 import { useGameLogic } from '../hooks/useGameLogic.js'
-import { getColor } from '../utils/utils.js'
+import { getStyles } from '../utils/utils.js'
 
 const GameBoard = () => {
   const { rightWordRef, allWordsRef } = useGetWords();
@@ -14,7 +14,7 @@ const GameBoard = () => {
           line.letters.map((letter, j) => {
             const isActive = i < wordRef.current;
             const colorClass = isActive
-              ? getColor(letter, j, rightWordRef?.current).className
+              ? getStyles(letter, j, rightWordRef?.current).className
               : 'inactive';
 
             return (
