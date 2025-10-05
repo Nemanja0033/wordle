@@ -8,44 +8,27 @@ const GameBoard = () => {
   const { wordRef, squares } = useGameLogic(allWordsRef, rightWordRef);
   
   return (
-    <main style={{ backgroundColor:'#1a1a1d', width: '100%', height: '89.6vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <div
-        style={{
-          width: 'auto',
-          height: 'auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
-          gridTemplateRows: 'repeat(6, 1fr)',
-          gap: '10px',
-        }}
-      >
+    <main className="main-container">
+      <div className="grid-container">
         {squares.map((line, i) =>
-          line.letters.map((letter, j) => (
-            <div
-              key={`${i}-${j}`}
-              style={{
-                marginTop: '2px',
-                backgroundColor: i < wordRef.current ? getColor(letter, j, rightWordRef?.current).backgroundColor : '#3a3f47',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '55.99px',
-                height: '55.99px',
-              }}
-            >
-                <span
-                  style={{
-                    color: i < wordRef.current ? getColor(letter, j, rightWordRef?.current).color : 'white',
-                    fontSize: '32px',
-                  }}
-                >
+          line.letters.map((letter, j) => {
+            const isActive = i < wordRef.current;
+            const colorClass = isActive
+              ? getColor(letter, j, rightWordRef?.current).className
+              : 'inactive';
+
+            return (
+              <div key={`${i}-${j}`} className={`grid-cell ${colorClass}`}>
+                <span className={`grid-letter ${isActive ? 'active-text' : 'inactive-text'}`}>
                   {letter.toUpperCase()}
                 </span>
-            </div>
-          ))
+              </div>
+            );
+          })
         )}
       </div>
     </main>
+
   )
 }
 
