@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { API_URL, RANDOM_INDEX } from "../utils/utils.js"
+import { API_URL, RANDOM_INDEX } from "../utils/constants.js"
 
 export function useGetWords(){
     const allWordsRef = useRef(null);

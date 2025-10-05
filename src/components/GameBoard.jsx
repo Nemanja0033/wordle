@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useGetWords } from '../hooks/useGetWords.js'
 import { useGameLogic } from '../hooks/useGameLogic.js'
 import { getColor } from '../utils/utils.js'
