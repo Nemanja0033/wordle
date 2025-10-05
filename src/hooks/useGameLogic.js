@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { ALLOWED_KEYS, SOUNDS } from "../utils/constants";
+import { ALLOWED_KEYS, ALLOWED_TRIES, SOUNDS } from "../utils/constants";
 import { toast } from "react-toastify";
 
 export function useGameLogic(allWordsRef, rightWordRef){
@@ -17,7 +17,7 @@ export function useGameLogic(allWordsRef, rightWordRef){
         // Apply entered word logic
         if (e.key === 'Enter') {
             // Limt word tries.
-            if (wordRef.current >= 6) return;
+            if (wordRef.current >= ALLOWED_TRIES) return;
 
             setSquares((prevSquares) => {
             const currentWord = prevSquares[wordRef.current];
@@ -79,7 +79,7 @@ export function useGameLogic(allWordsRef, rightWordRef){
         }
 
         // Dont allow user to try more than is allowed
-        if(wordRef.current >= 6 ) return;
+        if(wordRef.current >= ALLOWED_TRIES ) return;
 
         // Enter a letter on square logic
         if(ALLOWED_KEYS.includes(e.key)){
@@ -112,6 +112,8 @@ export function useGameLogic(allWordsRef, rightWordRef){
         };
 
         window.addEventListener('keydown', gameLogic);
+
+        return () => window.removeEventListener("keydown", gameLogic);
     }, []);
 
     return {
